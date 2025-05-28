@@ -1,6 +1,6 @@
 # Memos Sorter
 
-Memos Sorter 是一个 Python 项目，用于从 Memos (https://github.com/usememos/memos) 获取用户的 memos 内容，
+Memos Sorter 是一个 Python 项目，用于从 [Memos] (https://github.com/usememos/memos) 获取用户的 memos 内容，
 利用 AI (如 OpenAI API 或本地 Ollama 模型) 对其进行分析和分类，并最终输出为结构化的 Markdown 文件。
 
 ## 功能
@@ -14,4 +14,3 @@ Memos Sorter 是一个 Python 项目，用于从 Memos (https://github.com/useme
 ## 快速开始
 
 (后续补充安装和使用说明)
-# memos-sorter
