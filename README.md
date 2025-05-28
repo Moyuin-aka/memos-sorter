@@ -16,7 +16,7 @@ Memos Sorter 是一个 Python 项目，用于从 [Memos](https://github.com/usem
 - 通过 Memos API 获取 Memos 数据。
 - 将 Memos 数据转换为 Python 对象。
 - 调用 AI 模型对 Memos 内容进行分类。
-- 将分类后的 Memos 生成 Markdown 文件s
+- 将分类后的 Memos 生成 Markdown 文件。
 - 提供命令行界面进行交互。
 
 ## 快速开始
