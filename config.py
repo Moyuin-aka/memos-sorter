@@ -16,7 +16,8 @@ CATEGORIES = {
     "Thoughts": "带有主观判断与认知输出的内容，倾向于反思、自我分析等思辨内容。",
     "Confession": "情感浓度最高的内容，偏向于私人经历、情绪波动、生活碎片等。"
 }
-
+if YOUR_MEMOS_API_KEY is None or YOUR_MEMOS_URL is None:
+    raise ValueError("请确保已设置 YOUR_MEMOS_URL 和 YOUR_MEMOS_API_KEY 环境变量。")
 # AI 模型配置 (后续添加)
 # OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
 # OLLAMA_BASE_URL = "http://localhost:11434" # 本地 Ollama 服务地址
