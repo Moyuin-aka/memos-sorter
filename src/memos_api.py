@@ -12,11 +12,10 @@ from config import MEMOS_URL, MEMOS_API_TOKEN # 从项目根目录的 config.py 
 
 def fetch_all_memos():
     """
-    从 Memos API 获取所有 memos。
+    从 Memos API 获取所有 memos,且需要自动处理分页。
 
     Returns:
         list: 包含所有 memo 对象的列表，如果请求失败则返回 None。
-              每个 memo 对象是一个字典。
     """
     if not MEMOS_URL or not MEMOS_API_TOKEN:
         print("错误：MEMOS_URL 或 MEMOS_API_TOKEN 未在配置中设置。")
@@ -30,7 +29,7 @@ def fetch_all_memos():
         "Content-Type": "application/json"
     }
 
-    print(f"正在从 {api_url} 获取 memos...")
+    print(f"正在从 {MEMOS_URL} 获取 memos...")
 
     try:
         response = requests.get(api_url, headers=headers)

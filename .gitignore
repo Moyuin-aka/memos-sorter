@@ -18,3 +18,7 @@ venv.bak/
 .idea/
 *.swp
 *.swo
+
+# Tests
+test*
+/memos-sorted
