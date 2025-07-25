@@ -18,7 +18,14 @@ CATEGORIES = {
 }
 if YOUR_MEMOS_API_KEY is None or YOUR_MEMOS_URL is None:
     raise ValueError("请确保已设置 YOUR_MEMOS_URL 和 YOUR_MEMOS_API_KEY 环境变量。")
-# AI 模型配置 (后续添加)
-# OPENAI_API_KEY = "YOUR_OPENAI_API_KEY"
-# OLLAMA_BASE_URL = "http://localhost:11434" # 本地 Ollama 服务地址
-# MODEL_NAME = "llama3" # 使用的模型名称
+
+# --- AI 模型配置 ---
+# 从环境变量中加载 Gemini API Key
+YOUR_GEMINI_API_KEY = os.getenv("YOUR_GEMINI_API_KEY")
+
+# 检查 Gemini API Key 是否设置
+if YOUR_GEMINI_API_KEY is None:
+    raise ValueError("请确保已在 .env 文件中设置 YOUR_GEMINI_API_KEY 环境变量。")
+
+# 从环境变量中加载 Gemini 模型名称，如果未设置则使用默认值
+GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-1.5-flash-latest")

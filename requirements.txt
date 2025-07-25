@@ -1,5 +1,6 @@
 # Memos Sorter Dependencies
 requests
 python-dotenv # 用于加载 .env 文件中的环境变量
+google-generativeai # 用于调用 Google Gemini API
 # openai # 如果使用 OpenAI API
 # typer # 用于创建命令行界面
