@@ -39,7 +39,7 @@ python main.py
 - 可以按 `Ctrl+C` 取消当前操作后重试
 
 **问题：API 密钥错误**
-- 确认 `.env` 文件中的 `YOUR_GEMINI_API_KEY` 是否正确填写
+- 确认 `.env` 文件中的 `GEMINI_API_KEY` 是否正确填写
 - 检查 API 密钥是否已过期或被撤销
 - 访问 [Google AI Studio](https://makersuite.google.com/app/apikey) 重新获取密钥
 
@@ -50,12 +50,12 @@ python main.py
 ### Memos API 调用问题
 
 **问题：无法连接到 Memos 服务**
-- 确认 `YOUR_MEMOS_URL` 格式正确（如：`http://localhost:5230` 或 `https://your-domain.com`）
+- 确认 `MEMOS_URL` 格式正确（如：`http://localhost:5230` 或 `https://your-domain.com`）
 - 检查 Memos 服务是否正在运行
 - 确认网络能够访问指定的 Memos 地址
 
 **问题：401 Unauthorized**
-- 检查 `YOUR_MEMOS_API_KEY` 是否正确
+- 检查 `MEMOS_API_TOKEN` 是否正确
 - 确认 Token 是否有足够的权限读取 memos
 - 在 Memos 设置中重新生成 API Token
 

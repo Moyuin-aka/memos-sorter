@@ -1,70 +1,74 @@
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import json
-from config import YOUR_GEMINI_API_KEY, GEMINI_MODEL_NAME
+from typing import Dict, List
+from config import GEMINI_API_KEY, GEMINI_MODEL_NAME
 
-# 配置 Gemini API
-genai.configure(api_key=YOUR_GEMINI_API_KEY)
+client = genai.Client(api_key=GEMINI_API_KEY)
 
-def classify_memos_with_gemini(markdown_content: str, categories: dict) -> dict:
-    """
-    使用 Google Gemini API 对 Memos 内容进行分类。
-
-    Args:
-        markdown_content: 包含所有 memo 内容的 Markdown 格式的字符串。
-        categories: 用户定义的分类及其描述。
-
-    Returns:
-        一个字典，键是分类名称，值是属于该分类的 memo 列表。
-    """
-    model = genai.GenerativeModel(GEMINI_MODEL_NAME)
-
-    # 构建分类的字符串，以便在 prompt 中使用
+def classify_memos_with_gemini(markdown_content: str,
+                               categories: Dict[str, str]) -> Dict[str, List[str]]:
+    # 1) 组织分类文本
     categories_str = "\n".join([f"- {name}: {desc}" for name, desc in categories.items()])
-    
-    prompt = f"""
-你是一个内容分类助手。请根据以下分类标准，将我提供的 Memos 内容逐条分类。
+    category_keys = list(categories.keys())
+    category_keys_str = ", ".join(category_keys)
 
-**分类标准:**
+    system_instruction = (
+        "你是一个严谨的内容分类助手。"
+        "只允许使用用户提供的分类键；不要新增或改写分类名；输出必须是有效 JSON。"
+        "若某分类无内容，也要返回空数组。"
+    )
+
+    user_prompt = f"""请根据以下分类标准，将“Memos 内容”逐条归入对应分类：
+- 只允许使用这些分类键：{category_keys_str}
+- 一条 memo 可同时属于多个分类；无内容的分类请返回空数组
+- 仅返回 JSON，不要任何多余解释
+
+【分类标准】
 {categories_str}
 
-**Memos 内容:**
+【Memos 内容】
 {markdown_content}
-
-请严格按照以下 JSON 格式返回结果，不要有任何多余的解释或说明：
-
-```json
-{{
-  "分类1": [
-    "memo 内容 1",
-    "memo 内容 2"
-  ],
-  "分类2": [
-    "memo 内容 3"
-  ]
-}}
-```
 """
 
-    try:
-       # print("正在发送请求到 Gemini API...")
-        response = model.generate_content(prompt)
-        print("收到 Gemini API 响应")
-        # 从返回结果中提取 JSON 部分
-        # Gemini API 可能会在 JSON 前后添加 ```json 和 ```
-        text_response = response.text.strip()
-        json_start = text_response.find('{')
-        json_end = text_response.rfind('}') + 1
-        
-        if json_start == -1 or json_end == 0:
-            raise ValueError("响应中未找到有效的 JSON 对象")
+    # 2) 用 Schema 显式声明每个属性（避免 additionalProperties）
+    schema_properties = {
+        name: types.Schema(
+            type=types.Type.ARRAY,
+            items=types.Schema(type=types.Type.STRING),
+        )
+        for name in category_keys
+    }
+    response_schema = types.Schema(
+        type=types.Type.OBJECT,
+        properties=schema_properties,
+        required=category_keys,              # 强制所有键都出现（可为空数组）
+        property_ordering=category_keys,     # 可选：保持字段顺序一致
+    )
 
-        json_str = text_response[json_start:json_end]
-        
-        return json.loads(json_str)
+    config = types.GenerateContentConfig(
+        system_instruction=system_instruction,
+        response_mime_type="application/json",
+        response_schema=response_schema,     # 关键：改成显式 properties 的 Schema
+        temperature=0,
+    )
+
+    try:
+        resp = client.models.generate_content(
+            model=GEMINI_MODEL_NAME,
+            contents=user_prompt,
+            config=config,
+        )
+        raw = (resp.text or "").strip()
+        data = json.loads(raw)
+
+        # 兜底：过滤未知键、补齐缺失键、统一字符串类型
+        normalized = {k: [str(x) for x in data.get(k, [])] for k in category_keys}
+        return normalized
 
     except json.JSONDecodeError as e:
-        print(f"解析 Gemini API 响应时发生 JSON 错误: {e}")
-        print(f"收到的原始响应: {response.text}")
+        print(f"解析 JSON 失败: {e}")
+        print(f"原始响应: {getattr(resp, 'text', '')}")
         return None
     except Exception as e:
         print(f"调用 Gemini API 时发生错误: {e}")
