@@ -8,7 +8,7 @@ if _project_root not in sys.path:
 
 import requests
 import json
-from config import YOUR_MEMOS_URL, YOUR_MEMOS_API_KEY # 从项目根目录的 config.py 导入
+from config import MEMOS_URL, MEMOS_API_TOKEN # 从项目根目录的 config.py 导入
 
 def fetch_all_memos():
     """
@@ -17,19 +17,19 @@ def fetch_all_memos():
     Returns:
         list: 包含所有 memo 对象的列表，如果请求失败则返回 None。
     """
-    if not YOUR_MEMOS_URL or not YOUR_MEMOS_API_KEY:
-        print("错误：YOUR_MEMOS_URL 或 YOUR_MEMOS_API_KEY 未在配置中设置。")
-        print(f"YOUR_MEMOS_URL: {YOUR_MEMOS_URL}")
-        print(f"YOUR_MEMOS_API_KEY: {'已设置' if YOUR_MEMOS_API_KEY else '未设置'}")
+    if not MEMOS_URL or not MEMOS_API_TOKEN:
+        print("错误：MEMOS_URL 或 MEMOS_API_TOKEN 未在配置中设置。")
+        print(f"MEMOS_URL: {MEMOS_URL}")
+        print(f"MEMOS_API_TOKEN: {'已设置' if MEMOS_API_TOKEN else '未设置'}")
         return None
 
-    api_url = f"{YOUR_MEMOS_URL.rstrip('/')}/api/v1/memos" # 确保 URL 末尾没有多余的斜杠
+    api_url = f"{MEMOS_URL.rstrip('/')}/api/v1/memos" # 确保 URL 末尾没有多余的斜杠
     headers = {
-        "Authorization": f"Bearer {YOUR_MEMOS_API_KEY}",
+        "Authorization": f"Bearer {MEMOS_API_TOKEN}",
         "Content-Type": "application/json"
     }
 
-    print(f"正在从 {YOUR_MEMOS_URL} 获取 memos...")
+    print(f"正在从 {MEMOS_URL} 获取 memos...")
 
     try:
         response = requests.get(api_url, headers=headers)
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     # 这个 __main__ 块允许你直接运行 memos_api.py 来测试 fetch_all_memos 函数
     print("正在测试 fetch_all_memos()...")
     
-    # 确保你的 .env 文件已正确配置 YOUR_MEMOS_URL 和 YOUR_MEMOS_API_KEY
+    # 确保你的 .env 文件已正确配置 MEMOS_URL 和 MEMOS_API_TOKEN
     
     # 重新加载配置，以确保在直接运行此文件时 .env 被加载
     # (如果在项目顶层运行，config.py 已经加载了)
@@ -76,11 +76,11 @@ if __name__ == '__main__':
     # load_dotenv() # 如果 config.py 中的 load_dotenv() 没有在导入时执行，则需要此行
     
     # 检查配置是否加载
-    if not YOUR_MEMOS_URL or not YOUR_MEMOS_API_KEY:
-        print("请先在项目根目录创建 .env 文件并配置 YOUR_MEMOS_URL 和 YOUR_MEMOS_API_KEY。")
+    if not MEMOS_URL or not MEMOS_API_TOKEN:
+        print("请先在项目根目录创建 .env 文件并配置 MEMOS_URL 和 MEMOS_API_TOKEN。")
         print("示例 .env 内容：")
-        print("YOUR_MEMOS_URL=\"https://memos.xxx.com\"")
-        print("YOUR_MEMOS_API_KEY=\"your_actual_token_here\"")
+        print("MEMOS_URL=\"https://memos.xxx.com\"")
+        print("MEMOS_API_TOKEN=\"your_actual_token_here\"")
     else:
         all_memos = fetch_all_memos()
         if all_memos:
