@@ -1,6 +1,6 @@
 # Memos Sorter Dependencies
 requests
 python-dotenv # for source
-google-generativeai # for Google Gemini API
+google-genai # for Google Gemini API
 # openai # for OpenAI API
 # typer 
