@@ -1,7 +1,7 @@
 from google import genai
 from google.genai import types
 import json
-from typing import Dict, List
+from typing import Dict, List, Optional
 from config import GEMINI_API_KEY, GEMINI_MODEL_NAME
 
 client = genai.Client(
@@ -22,7 +22,7 @@ client = genai.Client(
 )
 
 def classify_memos_with_gemini(markdown_content: str,
-                               categories: Dict[str, str]) -> Dict[str, List[str]]:
+                               categories: Dict[str, str]) -> Optional[Dict[str, List[str]]]:
     # 1) 组织分类文本
     categories_str = "\n".join([f"- {name}: {desc}" for name, desc in categories.items()])
     category_keys = list(categories.keys())

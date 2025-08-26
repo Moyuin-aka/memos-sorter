@@ -14,7 +14,7 @@ from src.memos_api import fetch_all_memos
 from src.sorter import convert_memos_to_markdown
 from src.llm_client import classify_memos_with_gemini
 from src.markdown_exporter import export_to_markdown
-from config import CATEGORIES
+from config import CATEGORIES, GEMINI_MODEL_NAME
 
 # --- 全局变量用于线程通信 ---
 g_classified_memos = None
@@ -75,7 +75,7 @@ def main():
             user_categories = get_user_categories()
 
             # 4. 调用 LLM 进行分类 (带加载动画)
-            print("\n正在调用 Gemini API 进行分类... (按 Ctrl+C 取消)")
+            print(f"\n正在调用 Gemini API ({GEMINI_MODEL_NAME})进行分类... (按 Ctrl+C 取消)")
             
             g_api_thread = threading.Thread(target=classify_worker, args=(markdown_content, user_categories))
             g_api_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束

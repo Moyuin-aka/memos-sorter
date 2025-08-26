@@ -3,13 +3,6 @@
 Memos Sorter 是一个 Python 项目，用于从 [Memos](https://github.com/usememos/memos) 获取用户的 memos 内容，
 利用 LLM 对其进行分析和分类，并最终输出为结构化的 Markdown 文件。
 
-## 开发进度
-还是期末周的学生，这个小玩具几乎从0开始学起。我慢慢来，在写小玩具中感受一下 vibe coding 的魅力🤩。
-- [x] 实现基本项目框架
-- [x] 处理好 memos 的调用
-- [x] 加入 LLM 的调用
-- [x] 处理 markdown 文件输出
-
 ## 注意事项
 - 因为 AI studio 的 API_KEY 的申请是免费的，所以本程序目前只实现了对于 gemini api 调用的实现。如果要使用接入 OpenAI 的 ChatGPT，Anthropic 的 Claude，Deepseek 等，可能需要你的协助。
 - 这个脚本只是 vibe coding 的小玩具，也许会有很多 bug，望谅解。
