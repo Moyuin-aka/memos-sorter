@@ -4,7 +4,22 @@ import json
 from typing import Dict, List
 from config import GEMINI_API_KEY, GEMINI_MODEL_NAME
 
-client = genai.Client(api_key=GEMINI_API_KEY)
+client = genai.Client(
+    api_key=GEMINI_API_KEY,
+    http_options=types.HttpOptions(
+        headers={
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
+            'Accept': 'application/json',
+            'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'cross-site'
+        }
+    ),
+                      
+)
 
 def classify_memos_with_gemini(markdown_content: str,
                                categories: Dict[str, str]) -> Dict[str, List[str]]:
@@ -21,7 +36,7 @@ def classify_memos_with_gemini(markdown_content: str,
 
     user_prompt = f"""请根据以下分类标准，将“Memos 内容”逐条归入对应分类：
 - 只允许使用这些分类键：{category_keys_str}
-- 一条 memo 可同时属于多个分类；无内容的分类请返回空数组
+- 一条 memo 不可同时属于多个分类；无内容的分类请返回空数组
 - 仅返回 JSON，不要任何多余解释
 
 【分类标准】
