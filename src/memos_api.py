@@ -23,10 +23,11 @@ def fetch_all_memos():
         print(f"MEMOS_API_TOKEN: {'已设置' if MEMOS_API_TOKEN else '未设置'}")
         return None
 
-    api_url = f"{MEMOS_URL.rstrip('/')}/api/v1/memos" # 确保 URL 末尾没有多余的斜杠
+    api_url = f"{MEMOS_URL.rstrip('/')}/api/v1/memos" 
     headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
         "Authorization": f"Bearer {MEMOS_API_TOKEN}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
 
     print(f"正在从 {MEMOS_URL} 获取 memos...")
