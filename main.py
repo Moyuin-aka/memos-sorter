@@ -12,9 +12,9 @@ if _project_root not in sys.path:
 
 from src.memos_api import fetch_all_memos
 from src.sorter import convert_memos_to_markdown
-from src.llm_client import classify_memos_with_gemini
+from src.llm_client import classify_memos
 from src.markdown_exporter import export_to_markdown
-from config import CATEGORIES, GEMINI_MODEL_NAME
+from config import CATEGORIES, GEMINI_MODEL_NAME,OPENROUTER_MODEL_NAME
 
 # --- 全局变量用于线程通信 ---
 g_classified_memos = None
@@ -75,7 +75,24 @@ def main():
             user_categories = get_user_categories()
 
             # 4. 调用 LLM 进行分类 (带加载动画)
-            print(f"\n正在调用 Gemini API ({GEMINI_MODEL_NAME})进行分类... (按 Ctrl+C 取消)")
+            # 获取当前使用的 provider 和模型名称
+            from src.llm_providers import get_available_provider
+            try:
+                current_provider = get_available_provider()
+                provider_name = current_provider.get_name()
+                
+                # 根据 provider 类型获取对应的模型名称
+                if provider_name == "Gemini":
+                    model_name = GEMINI_MODEL_NAME
+                elif provider_name == "OpenRouter":
+                    model_name = OPENROUTER_MODEL_NAME
+                else:
+                    model_name = "默认模型"
+                
+                print(f"\n正在调用 {provider_name} API ({model_name})进行分类... (按 Ctrl+C 取消)")
+            except ValueError as e:
+                print(f"\n错误: {e}")
+                return
             
             g_api_thread = threading.Thread(target=classify_worker, args=(markdown_content, user_categories))
             g_api_thread.daemon = True  # 设置为守护线程，主程序退出时自动结束
@@ -149,7 +166,7 @@ def classify_worker(markdown_content, user_categories):
     global g_classified_memos, g_api_error, g_user_cancelled
     try:
         if not g_user_cancelled:
-            g_classified_memos = classify_memos_with_gemini(markdown_content, user_categories)
+            g_classified_memos = classify_memos(markdown_content, user_categories)
     except Exception as e:
         if not g_user_cancelled:
             g_api_error = str(e)

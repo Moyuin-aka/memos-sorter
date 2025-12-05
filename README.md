@@ -1,12 +1,14 @@
 # Memos Sorter
 
-Memos Sorter 是一个 Python 项目，用于从 [Memos](https://github.com/usememos/memos) 获取用户的 memos 内容，
-利用 LLM 对其进行分析和分类，并最终输出为结构化的 Markdown 文件。
+Memos Sorter 是一个 Python 脚本，用于从 [Memos](https://github.com/usememos/memos) 获取用户的 memos 内容，利用 LLM 对其进行分析和分类，并最终输出为结构化的 Markdown 文件。
 
 ## 注意事项
-- 因为 AI studio 的 API_KEY 的申请是免费的，所以本程序目前只实现了对于 gemini api 调用的实现。如果要使用接入 OpenAI 的 ChatGPT，Anthropic 的 Claude，Deepseek 等，可能需要你的协助。
+- 本项目现支持2种 LLM 提供商，您须选择一个：
+  - 使用 **Google Gemini**（推荐用于稳定性）
+  - 使用 **OpenRouter**（支持多种模型，包括免费模型）
+  - 程序会自动检测并选择您配置的 API
 - 这个脚本只是 vibe coding 的小玩具，也许会有很多 bug，望谅解。
-- 欢迎来提 issue 和 pr 👏。
+- 欢迎来提 issue 和 pr 👋。
 
 ## 快速开始
 ```bash
@@ -21,6 +23,33 @@ cp .env.example .env
 python main.py
 ```
 
+
+## 配置说明
+
+### LLM 提供商配置
+
+本项目支持以下 LLM 提供商（至少配置其中一个）：
+
+#### Google Gemini
+1. 访问 [Google AI Studio](https://makersuite.google.com/app/apikey) 获取 API Key
+2. 在 `.env` 中设置：
+   ```bash
+   GEMINI_API_KEY="your_api_key_here"
+   GEMINI_MODEL_NAME="gemini-2.5-flash-latest"  # 可选
+   ```
+
+#### OpenRouter
+1. 访问 [OpenRouter](https://openrouter.ai/) 注册并获取 API Key
+2. 在 `.env` 中设置：
+   ```bash
+   OPENROUTER_API_KEY="sk-or-v1-xxx"
+   OPENROUTER_MODEL_NAME="google/gemini-2.0-flash-exp:free"  # 可选，推荐使用免费模型
+   ```
+
+**自动选择逻辑**：程序会按照以下优先级自动选择可用的 LLM：
+1. OpenRouter（如果配置）
+2. Gemini（如果配置）
+
 ## 故障排除
 
 ### LLM API 调用问题
@@ -32,13 +61,18 @@ python main.py
 - 可以按 `Ctrl+C` 取消当前操作后重试
 
 **问题：API 密钥错误**
-- 确认 `.env` 文件中的 `GEMINI_API_KEY` 是否正确填写
-- 检查 API 密钥是否已过期或被撤销
-- 访问 [Google AI Studio](https://makersuite.google.com/app/apikey) 重新获取密钥
+- 确认 `.env` 文件中的 API Key 是否正确填写
+- 对于 Gemini：检查 `GEMINI_API_KEY` 并访问 [Google AI Studio](https://makersuite.google.com/app/apikey) 重新获取
+- 对于 OpenRouter：检查 `OPENROUTER_API_KEY` 并访问 [OpenRouter](https://openrouter.ai/keys) 查看密钥
+
+**问题：429 Too Many Requests**
+- 免费 API 配额已用完或达到速率限制
+- 对于 OpenRouter：可以切换到其他免费模型或升级账户
+- 对于 Gemini：等待配额重置或使用 OpenRouter 作为备选
 
 **问题：403 Forbidden 或地区限制**
 - Gemini API 在某些地区不可用，可能需要使用 VPN
-- 确认 API 密钥的使用配额是否已用完
+- 建议尝试使用 OpenRouter 作为替代方案
 
 ### Memos API 调用问题
 

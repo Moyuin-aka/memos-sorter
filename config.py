@@ -20,12 +20,22 @@ if MEMOS_API_TOKEN is None or MEMOS_URL is None:
     raise ValueError("请确保已设置 MEMOS_URL 和 MEMOS_API_TOKEN 环境变量。")
 
 # --- AI 模型配置 ---
-# 从环境变量中加载 Gemini API Key
+
+# Gemini 配置
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-2.5-flash-latest") # 默认模型
 
-# 检查 Gemini API Key 是否设置
-if GEMINI_API_KEY is None:
-    raise ValueError("请确保已在 .env 文件中设置 GEMINI_API_KEY 环境变量。")
+# OpenRouter 配置
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+OPENROUTER_MODEL_NAME = os.getenv("OPENROUTER_MODEL_NAME", "google/gemini-2.0-flash-exp:free") # 默认模型
+OPENROUTER_SITE_URL = os.getenv("OPENROUTER_SITE_URL")  # 可选
+OPENROUTER_SITE_NAME = os.getenv("OPENROUTER_SITE_NAME")  # 可选
 
-# 从环境变量中加载 Gemini 模型名称，如果未设置则使用默认值
-GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL_NAME", "gemini-1.5-flash-latest")
+# 检查至少配置了一个 LLM Provider
+if not GEMINI_API_KEY and not OPENROUTER_API_KEY:
+    raise ValueError(
+        "请至少配置一个 LLM Provider 的 API Key：\n"
+        "  - GEMINI_API_KEY (Google Gemini)\n"
+        "  - OPENROUTER_API_KEY (OpenRouter)\n"
+        "请在 .env 文件中设置相应的环境变量。"
+    )
